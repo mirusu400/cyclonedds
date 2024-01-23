@@ -57,6 +57,9 @@ static dds_return_t dds_participant_delete (dds_entity *e)
   if ((ret = ddsi_delete_participant (&e->m_domain->gv, &e->m_guid)) < 0)
     DDS_CERROR (&e->m_domain->gv.logconfig, "dds_participant_delete: internal error %"PRId32"\n", ret);
   ddsi_thread_state_asleep (ddsi_lookup_thread_state ());
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_participant_delete\t%d\n", ret);
+  fclose(fp);
   return DDS_RETCODE_OK;
 }
 
@@ -77,6 +80,9 @@ static dds_return_t dds_participant_qos_set (dds_entity *e, const dds_qos_t *qos
     }
     ddsi_thread_state_asleep (ddsi_lookup_thread_state ());
   }
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_participant_qos_set\t%d\n", DDS_RETCODE_OK);
+  fclose(fp);
   return DDS_RETCODE_OK;
 }
 
@@ -160,6 +166,10 @@ dds_entity_t dds_create_participant (const dds_domainid_t domain, const dds_qos_
   /* drop temporary extra ref to domain, dds_init */
   dds_entity_unpin_and_drop_ref (&dom->m_entity);
   dds_entity_unpin_and_drop_ref (&dds_global.m_entity);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_participant%d\n", ret);
+  fclose(fp);
+
   return ret;
 
 err_entity_init:
@@ -171,6 +181,9 @@ err_qos_validation:
 err_domain_create:
   dds_entity_unpin_and_drop_ref (&dds_global.m_entity);
 err_dds_init:
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_participant%d\n", ret);
+  fclose(fp);
   return ret;
 }
 
@@ -184,8 +197,12 @@ dds_return_t dds_lookup_participant (dds_domainid_t domain_id, dds_entity_t *par
   if (participants)
     participants[0] = 0;
 
-  if ((ret = dds_init ()) < 0)
+  if ((ret = dds_init ()) < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_lookup_participant\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
 
   ret = 0;
   struct dds_domain *dom;
@@ -202,5 +219,8 @@ dds_return_t dds_lookup_participant (dds_domainid_t domain_id, dds_entity_t *par
   }
   ddsrt_mutex_unlock (&dds_global.m_mutex);
   dds_entity_unpin_and_drop_ref (&dds_global.m_entity);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_lookup_participant\t%d\n", ret);
+  fclose(fp);
   return ret;
 }

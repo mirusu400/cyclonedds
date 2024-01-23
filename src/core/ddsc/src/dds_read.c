@@ -300,7 +300,11 @@ dds_return_t dds_peek_next (dds_entity_t reader, void **buf, dds_sample_info_t *
 
 dds_return_t dds_read (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, size_t bufsz, uint32_t maxs)
 {
-  return dds_read_impl (READ_OPER_READ, reader_or_condition, buf, bufsz, maxs, si, 0, DDS_HANDLE_NIL, false);
+  dds_return_t ret = dds_read_impl(READ_OPER_READ, reader_or_condition, buf, bufsz, maxs, si, 0, DDS_HANDLE_NIL, false);
+  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  fprintf(fp, "dds_read\t%d\n", ret);
+  return ret; 
+
 }
 
 dds_return_t dds_read_wl (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, uint32_t maxs)

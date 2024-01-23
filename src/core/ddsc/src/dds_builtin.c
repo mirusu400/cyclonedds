@@ -201,7 +201,7 @@ bool dds__validate_builtin_reader_qos (const dds_domain *dom, dds_entity_t topic
     return ddsi_qos_match_mask_p (bwr->wr.e.gv, qos, bwr->wr.xqos, qmask, &dummy, NULL, NULL, NULL, NULL) && !qos_has_resource_limits (qos);
 #elif DDS_HAS_TYPELIB
     return ddsi_qos_match_mask_p (bwr->wr.e.gv, qos, bwr->wr.xqos, qmask, &dummy, NULL, NULL) && !qos_has_resource_limits (qos);
-#else
+#else 
     return ddsi_qos_match_mask_p (bwr->wr.e.gv, qos, bwr->wr.xqos, qmask, &dummy) && !qos_has_resource_limits (qos);
 #endif
   }
@@ -222,17 +222,31 @@ dds_entity_t dds__get_builtin_subscriber (dds_entity_t e)
   dds_entity_t pp;
   dds_participant *p;
 
-  if ((pp = dds_get_participant (e)) <= 0)
+  if ((pp = dds_get_participant (e)) <= 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds__get_builtin_subscriber\t%d\n", pp);
+    fclose(fp);
     return pp;
-  if ((ret = dds_participant_lock (pp, &p)) != DDS_RETCODE_OK)
+  }
+    
+  if ((ret = dds_participant_lock (pp, &p)) != DDS_RETCODE_OK) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds__get_builtin_subscriber\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
 
   if (p->m_builtin_subscriber <= 0) {
     p->m_builtin_subscriber = dds__create_builtin_subscriber (p);
   }
   sub = p->m_builtin_subscriber;
   dds_participant_unlock(p);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds__get_builtin_subscriber\t%d\n", sub);
+  fclose(fp);
+  
   return sub;
+
 }
 
 static bool dds__builtin_is_builtintopic (const struct ddsi_sertype *tp, void *vdomain)

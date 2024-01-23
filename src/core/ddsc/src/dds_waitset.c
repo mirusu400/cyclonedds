@@ -293,11 +293,18 @@ dds_return_t dds_waitset_attach (dds_entity_t waitset, dds_entity_t entity, dds_
   dds_entity *e;
   dds_return_t ret;
 
-  if ((ret = dds_entity_pin (waitset, &wsent)) < 0)
+  if ((ret = dds_entity_pin (waitset, &wsent)) < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_attach\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
   else if (dds_entity_kind (wsent) != DDS_KIND_WAITSET)
   {
     dds_entity_unpin (wsent);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_attach\t%d\n", DDS_RETCODE_ILLEGAL_OPERATION);
+    fclose(fp);
     return DDS_RETCODE_ILLEGAL_OPERATION;
   }
   else
@@ -336,6 +343,9 @@ dds_return_t dds_waitset_attach (dds_entity_t waitset, dds_entity_t entity, dds_
     dds_entity_unpin (e);
   err_entity:
     dds_entity_unpin (&ws->m_entity);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_attach\t%d\n", ret);
+    fclose(fp);
     return ret;
   }
 }
@@ -345,11 +355,18 @@ dds_return_t dds_waitset_detach (dds_entity_t waitset, dds_entity_t entity)
   dds_entity *wsent;
   dds_return_t ret;
 
-  if ((ret = dds_entity_pin (waitset, &wsent)) != DDS_RETCODE_OK)
+  if ((ret = dds_entity_pin (waitset, &wsent)) != DDS_RETCODE_OK) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_detach\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
   else if (dds_entity_kind (wsent) != DDS_KIND_WAITSET)
   {
     dds_entity_unpin (wsent);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_detach\t%d\n", DDS_RETCODE_ILLEGAL_OPERATION);
+    fclose(fp);
     return DDS_RETCODE_ILLEGAL_OPERATION;
   }
   else
@@ -375,22 +392,35 @@ dds_return_t dds_waitset_detach (dds_entity_t waitset, dds_entity_t entity)
     dds_entity_unpin (&ws->m_entity);
     if (ret != DDS_RETCODE_OK && ret != DDS_RETCODE_PRECONDITION_NOT_MET)
       ret = DDS_RETCODE_BAD_PARAMETER;
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_detach\t%d\n", ret);
+    fclose(fp);
     return ret;
   }
 }
 
 dds_return_t dds_waitset_wait_until (dds_entity_t waitset, dds_attach_t *xs, size_t nxs, dds_time_t abstimeout)
 {
-  return dds_waitset_wait_impl (waitset, xs, nxs, abstimeout);
+  dds_return_t ret = dds_waitset_wait_impl (waitset, xs, nxs, abstimeout);
+  
+  return ret;
 }
 
 dds_return_t dds_waitset_wait (dds_entity_t waitset, dds_attach_t *xs, size_t nxs, dds_duration_t reltimeout)
 {
-  if (reltimeout < 0)
+  if (reltimeout < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_waitset_wait\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
   const dds_time_t tnow = dds_time ();
   const dds_time_t abstimeout = (DDS_INFINITY - reltimeout <= tnow) ? DDS_NEVER : (tnow + reltimeout);
-  return dds_waitset_wait_impl (waitset, xs, nxs, abstimeout);
+  dds_return_t ret = dds_waitset_wait_impl (waitset, xs, nxs, abstimeout);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_waitset_wait\t%d\n", ret);
+  fclose(fp);
+  return ret;
 }
 
 dds_return_t dds_waitset_set_trigger (dds_entity_t waitset, bool trigger)

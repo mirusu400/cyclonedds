@@ -1096,8 +1096,12 @@ dds_return_t dds_enable (dds_entity_t entity)
   dds_entity *e;
   dds_return_t rc;
 
-  if ((rc = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) != DDS_RETCODE_OK)
+  if ((rc = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) != DDS_RETCODE_OK) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_enable\t%d\n", rc);
+    fclose(fp);
     return rc;
+  }
 
   if ((e->m_flags & DDS_ENTITY_ENABLED) == 0)
   {
@@ -1106,6 +1110,9 @@ dds_return_t dds_enable (dds_entity_t entity)
     DDS_CERROR (&e->m_domain->gv.logconfig, "Delayed entity enabling is not supported\n");
   }
   dds_entity_unlock (e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_enable\t%d\n", rc);
+  fclose(fp);
   return DDS_RETCODE_OK;
 }
 
@@ -1232,7 +1239,11 @@ dds_return_t dds_take_status (dds_entity_t entity, uint32_t *status, uint32_t ma
 
 dds_return_t dds_get_status_changes (dds_entity_t entity, uint32_t *status)
 {
-  return dds_read_status (entity, status, 0);
+  dds_return_t ret = dds_read_status(entity, status, 0);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_get_status_changes\t%d\n", ret);
+  fclose(fp);
+  return ret;
 }
 
 dds_return_t dds_get_domainid (dds_entity_t entity, dds_domainid_t *id)
@@ -1256,13 +1267,25 @@ dds_return_t dds_get_instance_handle (dds_entity_t entity, dds_instance_handle_t
   dds_entity *e;
   dds_return_t ret;
 
-  if (ihdl == NULL)
+  if (ihdl == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_instance_handle\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
 
   if ((ret = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
+  {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_instance_handle\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
   *ihdl = e->m_iid;
   dds_entity_unpin(e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_get_instance_handle\t%d\n", DDS_RETCODE_OK);
+  fclose(fp);
   return ret;
 }
 
@@ -1552,8 +1575,12 @@ dds_return_t dds_assert_liveliness (dds_entity_t entity)
   dds_return_t rc;
   dds_entity *e, *ewr;
 
-  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
+  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_assert_liveliness\t%d\n", rc);
+    fclose(fp);
     return rc;
+  }
   switch (dds_entity_kind (e))
   {
     case DDS_KIND_PARTICIPANT: {
@@ -1561,10 +1588,18 @@ dds_return_t dds_assert_liveliness (dds_entity_t entity)
       break;
     }
     case DDS_KIND_WRITER: {
-      if ((rc = dds_entity_lock (entity, DDS_KIND_WRITER, &ewr)) != DDS_RETCODE_OK)
+      if ((rc = dds_entity_lock (entity, DDS_KIND_WRITER, &ewr)) != DDS_RETCODE_OK){
+        FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+        fprintf(fp, "dds_assert_liveliness\t%d\n", rc);
+        fclose(fp);
         return rc;
-      if ((rc = ddsi_write_hb_liveliness (&e->m_domain->gv, &e->m_guid, ((struct dds_writer *)ewr)->m_xp)) != DDS_RETCODE_OK)
+      }
+      if ((rc = ddsi_write_hb_liveliness (&e->m_domain->gv, &e->m_guid, ((struct dds_writer *)ewr)->m_xp)) != DDS_RETCODE_OK) {
+        FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+        fprintf(fp, "dds_assert_liveliness\t%d\n", rc);
+        fclose(fp);
         return rc;
+      }
       dds_entity_unlock (e);
       break;
     }
@@ -1574,6 +1609,9 @@ dds_return_t dds_assert_liveliness (dds_entity_t entity)
     }
   }
   dds_entity_unpin (e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_assert_liveliness\t%d\n", rc);
+  fclose(fp);
   return rc;
 }
 

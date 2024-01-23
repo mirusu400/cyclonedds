@@ -1038,8 +1038,12 @@ dds_return_t dds_get_name (dds_entity_t topic, char *name, size_t size)
 {
   dds_topic *t;
   dds_return_t ret;
-  if (size <= 0 || name == NULL)
+  if (size <= 0 || name == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_name\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
   name[0] = '\0';
 
   const char *bname;
@@ -1050,6 +1054,9 @@ dds_return_t dds_get_name (dds_entity_t topic, char *name, size_t size)
     ret = (dds_return_t) ddsrt_strlcpy (name, t->m_name, size);
     dds_topic_unpin (t);
   }
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_get_name\t%d\n", ret);
+  fclose(fp);
   return ret;
 }
 
@@ -1057,8 +1064,12 @@ dds_return_t dds_get_type_name (dds_entity_t topic, char *name, size_t size)
 {
   dds_topic *t;
   dds_return_t ret;
-  if (size <= 0 || name == NULL)
-    return DDS_RETCODE_BAD_PARAMETER;
+  if (size <= 0 || name == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_type_name\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
+    return DDS_RETCODE_BAD_PARAMETER;    
+  }
   name[0] = '\0';
 
   const char *bname;
@@ -1069,6 +1080,9 @@ dds_return_t dds_get_type_name (dds_entity_t topic, char *name, size_t size)
     ret = (dds_return_t) ddsrt_strlcpy (name, t->m_stype->type_name, size);
     dds_topic_unpin (t);
   }
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_get_type_name\t%d\n", ret);
+  fclose(fp);
   return ret;
 }
 
