@@ -1672,11 +1672,19 @@ dds_return_t dds_return_loan (dds_entity_t entity, void **buf, int32_t bufsz)
   //
   // The wisdom of such code may be debatable, but it has been allowed for a long
   // time and changing it may well break existing application code.
-  if (buf == NULL || (bufsz > 0 && buf[0] == NULL))
+  if (buf == NULL || (bufsz > 0 && buf[0] == NULL)) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_return_loan\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
 
-  if ((ret = dds_entity_pin (entity, &p_entity)) < 0)
+  if ((ret = dds_entity_pin (entity, &p_entity)) < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_return_loan\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
 
   switch (dds_entity_kind (p_entity))
   {
@@ -1712,6 +1720,9 @@ dds_return_t dds_return_loan (dds_entity_t entity, void **buf, int32_t bufsz)
     }
   }
   dds_entity_unpin (p_entity);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_return_loan\t%d\n", ret);
+  fclose(fp);
   return ret;
 }
 

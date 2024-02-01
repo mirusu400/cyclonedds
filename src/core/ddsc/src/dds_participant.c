@@ -181,10 +181,12 @@ err_qos_validation:
 err_domain_create:
   dds_entity_unpin_and_drop_ref (&dds_global.m_entity);
 err_dds_init:
-  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "dds_create_participant%d\n", ret);
-  fclose(fp);
+ {
+  FILE *fp2 = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp2, "dds_create_participant%d\n", ret);
+  fclose(fp2);
   return ret;
+ }
 }
 
 dds_return_t dds_lookup_participant (dds_domainid_t domain_id, dds_entity_t *participants, size_t size)

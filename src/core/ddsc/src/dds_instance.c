@@ -255,11 +255,19 @@ dds_instance_handle_t dds_lookup_instance (dds_entity_t entity, const void *data
   struct ddsi_serdata *sd;
   dds_entity *w_or_r;
 
-  if (data == NULL)
+  if (data == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_lookup_instance\t%d\n", DDS_HANDLE_NIL);
+    fclose(fp);
     return DDS_HANDLE_NIL;
+  }
 
-  if (dds_entity_lock (entity, DDS_KIND_DONTCARE, &w_or_r) < 0)
+  if (dds_entity_lock (entity, DDS_KIND_DONTCARE, &w_or_r) < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_lookup_instance\t%d\n", DDS_HANDLE_NIL);
+    fclose(fp);
     return DDS_HANDLE_NIL;
+  }
   switch (dds_entity_kind (w_or_r))
   {
     case DDS_KIND_WRITER:
@@ -269,9 +277,13 @@ dds_instance_handle_t dds_lookup_instance (dds_entity_t entity, const void *data
       // FIXME: used for serdata_from_sample, so maybe this should take the derived sertype for a specific data-representation?
       sertype = ((dds_reader *) w_or_r)->m_topic->m_stype;
       break;
-    default:
+    default: {
       dds_entity_unlock (w_or_r);
+      FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+      fprintf(fp, "dds_lookup_instance\t%d\n", DDS_HANDLE_NIL);
+      fclose(fp);
       return DDS_HANDLE_NIL;
+    }
   }
 
   dds_instance_handle_t ih;
@@ -286,6 +298,9 @@ dds_instance_handle_t dds_lookup_instance (dds_entity_t entity, const void *data
   }
   ddsi_thread_state_asleep (thrst);
   dds_entity_unlock (w_or_r);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_lookup_instance\t%d\n", ih);
+  fclose(fp);
   return ih;
 }
 
@@ -296,11 +311,19 @@ dds_return_t dds_instance_get_key (dds_entity_t entity, dds_instance_handle_t ih
   struct ddsi_tkmap_instance *tk;
   dds_entity *e;
 
-  if (data == NULL)
+  if (data == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_instance_get_key\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
 
-  if ((ret = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) < 0)
+  if ((ret = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) < 0) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_instance_get_key\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
   switch (dds_entity_kind (e))
   {
     case DDS_KIND_WRITER:
@@ -314,8 +337,13 @@ dds_return_t dds_instance_get_key (dds_entity_t entity, dds_instance_handle_t ih
       topic = ((dds_reader *) e->m_parent)->m_topic;
       break;
     default:
+    {
       dds_entity_unlock (e);
+      FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+      fprintf(fp, "dds_instance_get_key\t%d\n", DDS_RETCODE_ILLEGAL_OPERATION);
+      fclose(fp);
       return DDS_RETCODE_ILLEGAL_OPERATION;
+    }
   }
 
   struct ddsi_thread_state * const thrst = ddsi_lookup_thread_state ();
@@ -333,5 +361,8 @@ dds_return_t dds_instance_get_key (dds_entity_t entity, dds_instance_handle_t ih
   }
   ddsi_thread_state_asleep (thrst);
   dds_entity_unlock (e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_instance_get_key\t%d\n", ret);
+  fclose(fp);
   return ret;
 }

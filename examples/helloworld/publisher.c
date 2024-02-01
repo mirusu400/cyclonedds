@@ -9,7 +9,7 @@ int main (int argc, char ** argv)
   dds_entity_t topic;
   dds_entity_t writer;
   dds_return_t rc;
-  HelloWorldData_Msg msg;
+  
   uint32_t status = 0;
   (void)argc;
   (void)argv;
@@ -48,16 +48,22 @@ int main (int argc, char ** argv)
   }
 
   /* Create a message to write. */
-  msg.userID = 1;
-  msg.message = "Hello World";
 
-  printf ("=== [Publisher]  Writing : ");
-  printf ("Message (%"PRId32", %s)\n", msg.userID, msg.message);
-  fflush (stdout);
+  
 
-  rc = dds_write (writer, &msg);
-  if (rc != DDS_RETCODE_OK)
-    DDS_FATAL("dds_write: %s\n", dds_strretcode(-rc));
+    HelloWorldData_Msg msg;
+
+    msg.userID = 1;
+    msg.message = "Hello World";
+    printf ("=== [Publisher]  Writing : ");
+    printf ("Message (%"PRId32", %s)\n", msg.userID, msg.message);
+    fflush (stdout);
+    rc = dds_write (writer, &msg);
+    
+
+    if (rc != DDS_RETCODE_OK)
+      DDS_FATAL("dds_write: %s\n", dds_strretcode(-rc));
+  
 
   /* Deleting the participant will delete all its children recursively as well. */
   rc = dds_delete (participant);

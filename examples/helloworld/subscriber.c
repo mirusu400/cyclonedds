@@ -50,7 +50,7 @@ int main (int argc, char ** argv)
   while (true)
   {
     /* Do the actual read.
-     * The return value contains the number of read samples. */
+    * The return value contains the number of read samples. */
     rc = dds_read (reader, samples, infos, MAX_SAMPLES, MAX_SAMPLES);
     if (rc < 0)
       DDS_FATAL("dds_read: %s\n", dds_strretcode(-rc));
@@ -71,6 +71,8 @@ int main (int argc, char ** argv)
       dds_sleepfor (DDS_MSECS (20));
     }
   }
+  
+  
 
   /* Free the data location. */
   HelloWorldData_Msg_free (samples[0], DDS_FREE_ALL);
