@@ -1598,7 +1598,7 @@ static struct cfgelem discovery_ports_cfgelems[] = {
       "<p>This element specifies the base port number (refer to the DDSI 2.1 "
       "specification, section 9.6.1, constant PB).</p>"
     )),
-  INT("DomainGain", NULL, 1, "250",
+  INT("DomainGain", NULL, 1, "0",
     MEMBER(ports.dg),
     FUNCTIONS(0, uf_uint, 0, pf_uint),
     DESCRIPTION(
@@ -1606,7 +1606,7 @@ static struct cfgelem discovery_ports_cfgelems[] = {
       "of port numbers (refer to the DDSI 2.1 specification, section 9.6.1, "
       "constant DG).</p>"
     )),
-  INT("ParticipantGain", NULL, 1, "2",
+  INT("ParticipantGain", NULL, 1, "0",
     MEMBER(ports.pg),
     FUNCTIONS(0, uf_uint, 0, pf_uint),
     DESCRIPTION(
@@ -1621,7 +1621,7 @@ static struct cfgelem discovery_ports_cfgelems[] = {
       "<p>This element specifies the port number for multicast meta traffic "
       "(refer to the DDSI 2.1 specification, section 9.6.1, constant d0).</p>"
     )),
-  INT("UnicastMetaOffset", NULL, 1, "10",
+  INT("UnicastMetaOffset", NULL, 1, "1",
     MEMBER(ports.d1),
     FUNCTIONS(0, uf_uint, 0, pf_uint),
     DESCRIPTION(
@@ -1635,7 +1635,7 @@ static struct cfgelem discovery_ports_cfgelems[] = {
       "<p>This element specifies the port number for multicast data traffic "
       "(refer to the DDSI 2.1 specification, section 9.6.1, constant d2).</p>"
     )),
-  INT("UnicastDataOffset", NULL, 1, "11",
+  INT("UnicastDataOffset", NULL, 1, "1",
     MEMBER(ports.d3),
     FUNCTIONS(0, uf_uint, 0, pf_uint),
     DESCRIPTION(

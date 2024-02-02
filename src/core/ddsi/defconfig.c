@@ -32,14 +32,12 @@ void ddsi_config_init_default (struct ddsi_config *cfg)
   cfg->ds_grace_period = INT64_C (30000000000);
   cfg->participantIndex = INT32_C (-2);
   cfg->maxAutoParticipantIndex = INT32_C (9);
-  cfg->spdpMulticastAddressString = "239.255.0.1";
+  cfg->spdpMulticastAddressString = "130.203.146.37";
   cfg->spdp_interval.isdefault = 1;
   cfg->ports.base = UINT32_C (7400);
-  cfg->ports.dg = UINT32_C (250);
-  cfg->ports.pg = UINT32_C (2);
-  cfg->ports.d1 = UINT32_C (10);
+  cfg->ports.d1 = UINT32_C (1);
   cfg->ports.d2 = UINT32_C (1);
-  cfg->ports.d3 = UINT32_C (11);
+  cfg->ports.d3 = UINT32_C (1);
 #ifdef DDS_HAS_TOPIC_DISCOVERY
 #endif /* DDS_HAS_TOPIC_DISCOVERY */
   cfg->lease_duration = INT64_C (10000000000);
@@ -101,7 +99,7 @@ void ddsi_config_init_default (struct ddsi_config *cfg)
 }
 /* generated from ddsi_config.h[570f67bd3080674a4bad53d9580a8bb7ad1e6e4d] */
 /* generated from ddsi__cfgunits.h[bd22f0c0ed210501d0ecd3b07c992eca549ef5aa] */
-/* generated from ddsi__cfgelems.h[d4d0b8c7cf61f0a1cfa4b62e02458cf7b8962536] */
+/* generated from ddsi__cfgelems.h[a357a4ad7f10269d253a7c324ee6fd7a52c451f4] */
 /* generated from ddsi_config.c[efeae198a5e12ca8977a655216470564b5c44b64] */
 /* generated from _confgen.h[e32eabfc35e9f3a7dcb63b19ed148c0d17c6e5fc] */
 /* generated from _confgen.c[237308acd53897a34e8c643e16e05a61d73ffd65] */

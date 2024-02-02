@@ -68,7 +68,7 @@ int main (int argc, char ** argv)
     else
     {
       /* Polling sleep. */
-      dds_sleepfor (DDS_MSECS (20));
+      dds_sleepfor (DDS_MSECS (1));
     }
   }
 

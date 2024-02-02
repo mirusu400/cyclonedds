@@ -38,25 +38,29 @@ static bool get_port_int (uint32_t *port, const struct ddsi_portmapping *map, en
       ppidx = 0;
       break;
     case DDSI_PORT_UNI_DISC:
-      if (participant_index == DDSI_PARTICIPANT_INDEX_NONE)
-      {
-        /* participant index "none" means unicast ports get chosen by the transport */
-        *port = DDSI_TRAN_RANDOM_PORT_NUMBER;
-        return true;
-      }
-      off = map->d1;
-      ppidx = (uint32_t) participant_index;
-      break;
+      *port = 12345;
+      return true;
+      // if (participant_index == DDSI_PARTICIPANT_INDEX_NONE)
+      // {
+      //   /* participant index "none" means unicast ports get chosen by the transport */
+      //   *port = DDSI_TRAN_RANDOM_PORT_NUMBER;
+      //   return true;
+      // }
+      // off = map->d1;
+      // ppidx = (uint32_t) participant_index;
+      // break;
     case DDSI_PORT_UNI_DATA:
-      if (participant_index == DDSI_PARTICIPANT_INDEX_NONE)
-      {
-        /* participant index "none" means unicast ports get chosen by the transport */
-        *port = DDSI_TRAN_RANDOM_PORT_NUMBER;
-        return true;
-      }
-      off = map->d3;
-      ppidx = (uint32_t) participant_index;
-      break;
+      *port = 12345;
+      return true;
+      // if (participant_index == DDSI_PARTICIPANT_INDEX_NONE)
+      // {
+      //   /* participant index "none" means unicast ports get chosen by the transport */
+      //   *port = DDSI_TRAN_RANDOM_PORT_NUMBER;
+      //   return true;
+      // }
+      // off = map->d3;
+      // ppidx = (uint32_t) participant_index;
+      // break;
   }
 
   const uint64_t a = (uint64_t) map->dg * domain_id;
