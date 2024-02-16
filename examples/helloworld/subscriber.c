@@ -1,5 +1,5 @@
 #include "dds/dds.h"
-#include "HelloWorldData.h"
+#include "HelloWorld.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@ int main (int argc, char ** argv)
   dds_entity_t participant;
   dds_entity_t topic;
   dds_entity_t reader;
-  HelloWorldData_Msg *msg;
+  HelloWorld *msg;
   void *samples[MAX_SAMPLES];
   dds_sample_info_t infos[MAX_SAMPLES];
   dds_return_t rc;
@@ -27,13 +27,13 @@ int main (int argc, char ** argv)
 
   /* Create a Topic. */
   topic = dds_create_topic (
-    participant, &HelloWorldData_Msg_desc, "HelloWorldData_Msg", NULL, NULL);
+    participant, &HelloWorld_desc, "HelloWorldData_Msg", NULL, NULL);
   if (topic < 0)
     DDS_FATAL("dds_create_topic: %s\n", dds_strretcode(-topic));
 
   /* Create a reliable Reader. */
   qos = dds_create_qos ();
-  dds_qset_reliability (qos, DDS_RELIABILITY_RELIABLE, DDS_SECS (10));
+  dds_qset_reliability (qos, DDS_RELIABILITY_RELIABLE, DDS_SECS (1));
   reader = dds_create_reader (participant, topic, qos, NULL);
   if (reader < 0)
     DDS_FATAL("dds_create_reader: %s\n", dds_strretcode(-reader));
@@ -44,7 +44,7 @@ int main (int argc, char ** argv)
 
   /* Initialize sample buffer, by pointing the void pointer within
    * the buffer array to a valid sample memory location. */
-  samples[0] = HelloWorldData_Msg__alloc ();
+  samples[0] = HelloWorld__alloc ();
 
   /* Poll until data has been read. */
   while (true)
@@ -59,9 +59,13 @@ int main (int argc, char ** argv)
     if ((rc > 0) && (infos[0].valid_data))
     {
       /* Print Message. */
-      msg = (HelloWorldData_Msg*) samples[0];
+      msg = (HelloWorld*) samples[0];
       printf ("=== [Subscriber] Received : ");
-      printf ("Message (%"PRId32", %s)\n", msg->userID, msg->message);
+      printf ("Message (%"PRId32", %s)\n", msg->index, msg->message);
+      FILE *fp;
+      fp = fopen("log.txt", "a");
+      fprintf(fp, "Message (%"PRId32", %s)\n", msg->index, msg->message);
+      fclose(fp);
       fflush (stdout);
       break;
     }
@@ -73,7 +77,7 @@ int main (int argc, char ** argv)
   }
 
   /* Free the data location. */
-  HelloWorldData_Msg_free (samples[0], DDS_FREE_ALL);
+  HelloWorld_free (samples[0], DDS_FREE_ALL);
 
   /* Deleting the participant will delete all its children recursively as well. */
   rc = dds_delete (participant);

@@ -45,7 +45,7 @@ set(CMAKE_C_STANDARD 99)
 if(CMAKE_SYSTEM_NAME STREQUAL "VxWorks")
   add_definitions(-std=c99)
 endif()
-
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 if(${CMAKE_C_COMPILER_ID} STREQUAL "SunPro")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m64 -xc99 -D__restrict=restrict -D__deprecated__=")
   set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -m64")
