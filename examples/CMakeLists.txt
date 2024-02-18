@@ -15,7 +15,7 @@ include("${CycloneDDS_SOURCE_DIR}/cmake/Modules/Generate.cmake")
 
 install(
   FILES
-    helloworld/HelloWorldData.idl
+    helloworld/HelloWorld.idl
     helloworld/publisher.c
     helloworld/subscriber.c
     helloworld/CMakeLists.txt
