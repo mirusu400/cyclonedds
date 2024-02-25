@@ -87,8 +87,12 @@ dds_entity_t dds_get_datareader (dds_entity_t entity)
 {
   struct dds_entity *e;
   dds_return_t rc;
-  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
+  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_datareader\t%d\n", rc);
+    fclose(fp);
     return rc;
+  }
   else
   {
     dds_entity_t rdh;
@@ -104,6 +108,9 @@ dds_entity_t dds_get_datareader (dds_entity_t entity)
         break;
     }
     dds_entity_unpin (e);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_datareader\t%p\n", rdh);
+    fclose(fp);
     return rdh;
   }
 }

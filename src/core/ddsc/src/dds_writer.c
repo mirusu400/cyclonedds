@@ -309,8 +309,12 @@ dds_entity_t dds_create_writer (dds_entity_t participant_or_publisher, dds_entit
 
   {
     dds_entity *p_or_p;
-    if ((rc = dds_entity_lock (participant_or_publisher, DDS_KIND_DONTCARE, &p_or_p)) != DDS_RETCODE_OK)
+    if ((rc = dds_entity_lock (participant_or_publisher, DDS_KIND_DONTCARE, &p_or_p)) != DDS_RETCODE_OK){
+      FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+      fprintf(fp, "dds_create_writer\t%d\n", rc);
+      fclose(fp);
       return rc;
+    }
     switch (dds_entity_kind (p_or_p))
     {
       case DDS_KIND_PUBLISHER:
@@ -326,6 +330,9 @@ dds_entity_t dds_create_writer (dds_entity_t participant_or_publisher, dds_entit
         break;
       default:
         dds_entity_unlock (p_or_p);
+        FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+        fprintf(fp, "dds_create_writer\t%d\n", DDS_RETCODE_ILLEGAL_OPERATION);
+        fclose(fp);
         return DDS_RETCODE_ILLEGAL_OPERATION;
     }
   }
@@ -450,6 +457,9 @@ dds_entity_t dds_create_writer (dds_entity_t participant_or_publisher, dds_entit
   }
 
   ddsrt_mutex_unlock (&gv->sendq_running_lock);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_writer\t%p\n", writer);
+  fclose(fp);
   return writer;
 
 err_pipe_open:
@@ -476,8 +486,9 @@ dds_entity_t dds_get_publisher (dds_entity_t writer)
 {
   dds_entity *e;
   dds_return_t rc;
-  if ((rc = dds_entity_pin (writer, &e)) != DDS_RETCODE_OK)
+  if ((rc = dds_entity_pin (writer, &e)) != DDS_RETCODE_OK){  
     return rc;
+  }
   else
   {
     dds_entity_t pubh;

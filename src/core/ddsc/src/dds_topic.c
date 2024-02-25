@@ -636,11 +636,21 @@ dds_entity_t dds_create_topic (dds_entity_t participant, const dds_topic_descrip
   struct dds_entity *ppent;
   dds_return_t ret;
 
-  if (descriptor == NULL || name == NULL)
+  if (descriptor == NULL || name == NULL) {
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_create_topic\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
+  }
 
-  if ((ret = dds_entity_pin (participant, &ppent)) < 0)
+
+
+  if ((ret = dds_entity_pin (participant, &ppent)) < 0){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_create_topic\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
 
   dds_qos_t *tpqos = dds_create_qos ();
   if (qos)
@@ -678,6 +688,9 @@ err_data_repr:
 err_st_init:
   dds_delete_qos (tpqos);
   dds_entity_unpin (ppent);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_topic\t%p\n", hdl);
+  fclose(fp);
   return hdl;
 }
 
@@ -931,7 +944,11 @@ dds_entity_t dds_find_topic (dds_find_scope_t scope, dds_entity_t participant, c
   if (type_info != NULL)
     return DDS_RETCODE_BAD_PARAMETER;
 #endif
-  return dds_find_topic_impl (scope, participant, name, type_info, timeout);
+  dds_entity_t res = dds_find_topic_impl (scope, participant, name, type_info, timeout);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_find_topic\t%p\n", res);
+  fclose(fp);
+  return res;
 }
 
 dds_entity_t dds_find_topic_scoped (dds_find_scope_t scope, dds_entity_t participant, const char *name, dds_duration_t timeout)

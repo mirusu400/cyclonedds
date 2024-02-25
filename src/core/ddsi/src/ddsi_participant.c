@@ -1058,9 +1058,9 @@ dds_return_t ddsi_delete_participant (struct ddsi_domaingv *gv, const struct dds
   if ((pp = ddsi_entidx_lookup_participant_guid (gv->entity_index, ppguid)) == NULL)
   {
     ddsrt_mutex_unlock (&gv->lock);
-    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-    fprintf(fp, "ddsi_delete_participant\t%d\n", DDS_RETCODE_BAD_PARAMETER);
-    fclose(fp);
+    // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    // fprintf(fp, "ddsi_delete_participant\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    // fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
   }
   ddsi_builtintopic_write_endpoint (gv->builtin_topic_interface, &pp->e, ddsrt_time_wallclock(), false);
@@ -1074,9 +1074,9 @@ dds_return_t ddsi_delete_participant (struct ddsi_domaingv *gv, const struct dds
   ddsi_entidx_remove_participant_guid (gv->entity_index, pp);
   ddsrt_mutex_unlock (&gv->lock);
   gcreq_participant (pp);
-  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "ddsi_delete_participant\t%d\n", DDS_RETCODE_OK);
-  fclose(fp);
+  // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  // fprintf(fp, "ddsi_delete_participant\t%d\n", DDS_RETCODE_OK);
+  // fclose(fp);
   return 0;
 }
 

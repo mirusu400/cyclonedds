@@ -396,7 +396,11 @@ static void print_delete (const dds_entity *e, enum delete_impl_state delstate ,
 
 dds_return_t dds_delete (dds_entity_t entity)
 {
-  return dds_delete_impl (entity, DIS_USER);
+  dds_return_t res = dds_delete_impl (entity, DIS_USER);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_find_topic\t%d\n", res);
+  fclose(fp);
+  return res
 }
 
 void dds_entity_final_deinit_before_free (dds_entity *e)
@@ -611,13 +615,20 @@ dds_entity_t dds_get_participant (dds_entity_t entity)
 {
   dds_entity *e;
   dds_return_t rc;
-  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
+  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_participant\t%d\n", rc);
+    fclose(fp);
     return rc;
+  }
   else
   {
     dds_participant *par = dds_entity_participant (e);
     dds_entity_t hdl = par ? par->m_entity.m_hdllink.hdl : 0;
     dds_entity_unpin (e);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_participant\t%p\n", hdl);
+    fclose(fp);
     return hdl;
   }
 }
@@ -931,15 +942,26 @@ dds_return_t dds_set_qos (dds_entity_t entity, const dds_qos_t *qos)
 {
   dds_entity *e;
   dds_return_t ret;
-  if (qos == NULL)
+  if (qos == NULL){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_set_qos\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);  
     return DDS_RETCODE_BAD_PARAMETER;
-  if ((ret = dds_entity_pin (entity, &e)) < 0)
+  }
+  if ((ret = dds_entity_pin (entity, &e)) < 0){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_set_qos\t%d\n", ret);
+    fclose(fp); 
     return ret;
+  }
 
   const dds_entity_kind_t kind = dds_entity_kind (e);
   if (!dds_entity_supports_set_qos (e))
   {
     dds_entity_unpin (e);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_set_qos\t%d\n", DDS_RETCODE_ILLEGAL_OPERATION);
+    fclose(fp); 
     return DDS_RETCODE_ILLEGAL_OPERATION;
   }
 
@@ -949,6 +971,9 @@ dds_return_t dds_set_qos (dds_entity_t entity, const dds_qos_t *qos)
   if (ret < 0)
   {
     dds_entity_unpin (e);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_set_qos\t%d\n", ret);
+    fclose(fp); 
     return ret;
   }
 
@@ -976,6 +1001,9 @@ dds_return_t dds_set_qos (dds_entity_t entity, const dds_qos_t *qos)
   }
 
   dds_entity_unpin (e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_set_qos\t%d\n", DDS_RETCODE_OK);
+  fclose(fp); 
   return DDS_RETCODE_OK;
 }
 
@@ -1251,14 +1279,24 @@ dds_return_t dds_get_domainid (dds_entity_t entity, dds_domainid_t *id)
   dds_entity *e;
   dds_return_t rc;
 
-  if (id == NULL)
+  if (id == NULL){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_domainid\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
-
-  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
+  }
+  if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_domainid\t%d\n", rc);
+    fclose(fp);
     return rc;
+  }
 
   *id = e->m_domain ? e->m_domain->m_id : DDS_DOMAIN_DEFAULT;
   dds_entity_unpin (e);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_get_domainid\t%d\n", DDS_RETCODE_OK);
+  fclose(fp);
   return DDS_RETCODE_OK;
 }
 

@@ -167,7 +167,7 @@ dds_entity_t dds_create_participant (const dds_domainid_t domain, const dds_qos_
   dds_entity_unpin_and_drop_ref (&dom->m_entity);
   dds_entity_unpin_and_drop_ref (&dds_global.m_entity);
   FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "dds_create_participant%d\n", ret);
+  fprintf(fp, "dds_create_participant\t%p\n", ret);
   fclose(fp);
 
   return ret;

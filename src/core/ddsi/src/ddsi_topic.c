@@ -86,9 +86,9 @@ dds_return_t ddsi_new_topic (struct ddsi_topic **tp_out, struct ddsi_guid *tpgui
   tpguid->prefix = pp->e.guid.prefix;
   if ((rc = ddsi_participant_allocate_entityid (&tpguid->entityid, (is_builtin ? DDSI_ENTITYID_KIND_CYCLONE_TOPIC_BUILTIN : DDSI_ENTITYID_KIND_CYCLONE_TOPIC_USER) | DDSI_ENTITYID_SOURCE_VENDOR, pp)) < 0)
   {
-    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-    fprintf(fp, "ddsi_new_topic\t%d\n", rc);
-    fclose(fp);
+    // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    // fprintf(fp, "ddsi_new_topic\t%d\n", rc);
+    // fclose(fp);
     return rc;
   }
   assert (ddsi_entidx_lookup_topic_guid (gv->entity_index, tpguid) == NULL);
@@ -128,9 +128,9 @@ dds_return_t ddsi_new_topic (struct ddsi_topic **tp_out, struct ddsi_guid *tpgui
   ddsi_entidx_insert_topic_guid (gv->entity_index, tp);
   (void) ddsi_sedp_write_topic (tp, true);
   ddsrt_mutex_unlock (&tp->e.lock);
-  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "ddsi_new_topic\t%d\n", rc);
-  fclose(fp);
+  // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  // fprintf(fp, "ddsi_new_topic\t%d\n", rc);
+  // fclose(fp);
   return 0;
 }
 
@@ -200,17 +200,17 @@ dds_return_t ddsi_delete_topic (struct ddsi_domaingv *gv, const struct ddsi_guid
   if ((tp = ddsi_entidx_lookup_topic_guid (gv->entity_index, guid)) == NULL)
   {
     GVLOGDISC ("ddsi_delete_topic (guid "PGUIDFMT") - unknown guid\n", PGUID (*guid));
-    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-    fprintf(fp, "ddsi_delete_topic\t%d\n", DDS_RETCODE_BAD_PARAMETER);
-    fclose(fp);
+    // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    // fprintf(fp, "ddsi_delete_topic\t%d\n", DDS_RETCODE_BAD_PARAMETER);
+    // fclose(fp);
     return DDS_RETCODE_BAD_PARAMETER;
   }
   GVLOGDISC ("ddsi_delete_topic (guid "PGUIDFMT") ...\n", PGUID (*guid));
   ddsi_entidx_remove_topic_guid (gv->entity_index, tp);
   gcreq_topic (tp);
-  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "ddsi_delete_topic\t%d\n", 0);
-  fclose(fp);
+  // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  // fprintf(fp, "ddsi_delete_topic\t%d\n", 0);
+  // fclose(fp);
   return 0;
 }
 
