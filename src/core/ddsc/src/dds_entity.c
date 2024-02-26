@@ -400,7 +400,7 @@ dds_return_t dds_delete (dds_entity_t entity)
   FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_find_topic\t%d\n", res);
   fclose(fp);
-  return res
+  return res;
 }
 
 void dds_entity_final_deinit_before_free (dds_entity *e)
