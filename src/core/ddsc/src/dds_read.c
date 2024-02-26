@@ -301,7 +301,7 @@ dds_return_t dds_peek_next (dds_entity_t reader, void **buf, dds_sample_info_t *
 dds_return_t dds_read (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, size_t bufsz, uint32_t maxs)
 {
   dds_return_t ret = dds_read_impl(READ_OPER_READ, reader_or_condition, buf, bufsz, maxs, si, 0, DDS_HANDLE_NIL, false);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_read\t%d\n", ret);
   return ret; 
 
@@ -310,7 +310,7 @@ dds_return_t dds_read (dds_entity_t reader_or_condition, void **buf, dds_sample_
 dds_return_t dds_read_wl (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, uint32_t maxs)
 {
   dds_return_t ret = dds_read (reader_or_condition, buf, si, maxs, maxs);
-  // FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   // fprintf(fp, "dds_read_wl\t%d\n", ret);
   return ret;
 }
@@ -328,12 +328,12 @@ dds_return_t dds_read_mask_wl (dds_entity_t reader_or_condition, void **buf, dds
 dds_return_t dds_read_instance (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, size_t bufsz, uint32_t maxs, dds_instance_handle_t handle)
 {
   if (handle == DDS_HANDLE_NIL) {
-    FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
     fprintf(fp, "dds_read_instance\t%d\n", DDS_RETCODE_PRECONDITION_NOT_MET);
     return DDS_RETCODE_PRECONDITION_NOT_MET;
   }
   dds_return_t ret = dds_read_impl (READ_OPER_READ, reader_or_condition, buf, bufsz, maxs, si, 0, handle, false);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_read_instance\t%d\n", ret);
   return ret;
 }
@@ -359,7 +359,7 @@ dds_return_t dds_read_next (dds_entity_t reader, void **buf, dds_sample_info_t *
 {
   uint32_t mask = DDS_NOT_READ_SAMPLE_STATE | DDS_ANY_VIEW_STATE | DDS_ANY_INSTANCE_STATE;
   dds_return_t ret = dds_read_impl (READ_OPER_READ, reader, buf, 1u, 1u, si, mask, DDS_HANDLE_NIL, true);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_read_next\t%d\n", ret);
   return ret;
 }
@@ -372,7 +372,7 @@ dds_return_t dds_read_next_wl (dds_entity_t reader, void **buf, dds_sample_info_
 dds_return_t dds_take (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, size_t bufsz, uint32_t maxs)
 {
   dds_return_t ret = dds_read_impl (READ_OPER_TAKE, reader_or_condition, buf, bufsz, maxs, si, 0, DDS_HANDLE_NIL, false);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_take\t%d\n", ret);
   return ret;
 }
@@ -380,7 +380,7 @@ dds_return_t dds_take (dds_entity_t reader_or_condition, void **buf, dds_sample_
 dds_return_t dds_take_wl (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, uint32_t maxs)
 {
   dds_return_t ret = dds_take (reader_or_condition, buf, si, maxs, maxs);
-  // FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  // FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   // fprintf(fp, "dds_take_wl\t%d\n", ret);
   return ret;
 }
@@ -398,12 +398,12 @@ dds_return_t dds_take_mask_wl (dds_entity_t reader_or_condition, void **buf, dds
 dds_return_t dds_take_instance (dds_entity_t reader_or_condition, void **buf, dds_sample_info_t *si, size_t bufsz, uint32_t maxs, dds_instance_handle_t handle)
 {
   if (handle == DDS_HANDLE_NIL) {
-    FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
     fprintf(fp, "dds_take_instance\t%d\n", DDS_RETCODE_PRECONDITION_NOT_MET);
     return DDS_RETCODE_PRECONDITION_NOT_MET;
   }
   dds_return_t ret = dds_read_impl (READ_OPER_TAKE, reader_or_condition, buf, bufsz, maxs, si, 0, handle, false);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_take_instance\t%d\n", ret);
   return ret;
 }
@@ -430,7 +430,7 @@ dds_return_t dds_take_next (dds_entity_t reader, void **buf, dds_sample_info_t *
   uint32_t mask = DDS_NOT_READ_SAMPLE_STATE | DDS_ANY_VIEW_STATE | DDS_ANY_INSTANCE_STATE;
 
   dds_return_t ret = dds_read_impl (READ_OPER_TAKE, reader, buf, 1u, 1u, si, mask, DDS_HANDLE_NIL, true);
-  FILE *fp = fopen("/tmp/cycleondds-debug", "a+");
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
   fprintf(fp, "dds_take_next\t%d\n", ret);
   return ret;
 }
