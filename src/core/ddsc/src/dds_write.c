@@ -42,10 +42,18 @@ dds_return_t dds_write (dds_entity_t writer, const void *data)
   if (data == NULL)
     return DDS_RETCODE_BAD_PARAMETER;
 
-  if ((ret = dds_writer_lock (writer, &wr)) != DDS_RETCODE_OK)
+  if ((ret = dds_writer_lock (writer, &wr)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_wrte\t%d\n", ret);
+    fclose(fp); 
     return ret;
+  }
+
   ret = dds_write_impl (wr, data, dds_time (), 0);
   dds_writer_unlock (wr);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_wrte\t%d\n", ret);
+  fclose(fp); 
   return ret;
 }
 

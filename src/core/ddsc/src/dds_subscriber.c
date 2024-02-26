@@ -100,9 +100,16 @@ dds_return_t dds_notify_readers (dds_entity_t subscriber)
 {
   dds_subscriber *sub;
   dds_return_t ret;
-  if ((ret = dds_subscriber_lock (subscriber, &sub)) != DDS_RETCODE_OK)
+  if ((ret = dds_subscriber_lock (subscriber, &sub)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_notify_readers\t%d\n", ret);
+    fclose(fp);
     return ret;
+  }
   dds_subscriber_unlock (sub);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_notify_readers\t%d\n", DDS_RETCODE_UNSUPPORTED);
+  fclose(fp);
   return DDS_RETCODE_UNSUPPORTED;
 }
 
