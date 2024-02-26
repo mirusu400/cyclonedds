@@ -479,9 +479,9 @@ err_pin_topic:
   dds_publisher_unlock (pub);
   if (created_implicit_pub)
     (void) dds_delete (publisher);
-  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "dds_create_writer\t%d\n", rc);
-  fclose(fp);
+  FILE *fp1 = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp1, "dds_create_writer\t%d\n", rc);
+  fclose(fp1);
   return rc;
 }
 
@@ -489,7 +489,10 @@ dds_entity_t dds_get_publisher (dds_entity_t writer)
 {
   dds_entity *e;
   dds_return_t rc;
-  if ((rc = dds_entity_pin (writer, &e)) != DDS_RETCODE_OK){  
+  if ((rc = dds_entity_pin (writer, &e)) != DDS_RETCODE_OK){
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_publisher\t%d\n", rc);
+    fclose(fp);  
     return rc;
   }
   else
@@ -503,6 +506,9 @@ dds_entity_t dds_get_publisher (dds_entity_t writer)
       pubh = e->m_parent->m_hdllink.hdl;
     }
     dds_entity_unpin (e);
+    FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+    fprintf(fp, "dds_get_publisher\t%p\n", pubh);
+    fclose(fp);  
     return pubh;
   }
 }
