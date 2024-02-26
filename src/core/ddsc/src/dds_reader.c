@@ -784,7 +784,10 @@ fail_serdata:
 
 dds_entity_t dds_create_reader (dds_entity_t participant_or_subscriber, dds_entity_t topic, const dds_qos_t *qos, const dds_listener_t *listener)
 {
-  return dds_create_reader_int (participant_or_subscriber, topic, qos, listener, NULL);
+  dds_entity_t res = dds_create_reader_int (participant_or_subscriber, topic, qos, listener, NULL);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_reader\t%p\n", res);
+  return res;
 }
 
 dds_entity_t dds_create_reader_rhc (dds_entity_t participant_or_subscriber, dds_entity_t topic, const dds_qos_t *qos, const dds_listener_t *listener, struct dds_rhc *rhc)

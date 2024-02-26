@@ -398,7 +398,7 @@ dds_return_t dds_delete (dds_entity_t entity)
 {
   dds_return_t res = dds_delete_impl (entity, DIS_USER);
   FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
-  fprintf(fp, "dds_find_topic\t%d\n", res);
+  fprintf(fp, "dds_delete\t%d\n", res);
   fclose(fp);
   return res;
 }

@@ -479,6 +479,9 @@ err_pin_topic:
   dds_publisher_unlock (pub);
   if (created_implicit_pub)
     (void) dds_delete (publisher);
+  FILE *fp = fopen("/tmp/cyclonedds-debug", "a+");
+  fprintf(fp, "dds_create_writer\t%d\n", rc);
+  fclose(fp);
   return rc;
 }
 
